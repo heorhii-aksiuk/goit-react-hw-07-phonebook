@@ -13,5 +13,3 @@ export const contactsApi = createApi({
 });
 
 export const { useGetContactQuery } = contactsApi;
-
-//test
