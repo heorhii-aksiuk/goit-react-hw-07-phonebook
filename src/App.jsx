@@ -1,48 +1,36 @@
 import { useSelector, useDispatch } from 'react-redux';
+import {
+  useFetchContactsQuery,
+  useAddContactMutation,
+  useDeleteContactMutation,
+} from './store/contacts/contactsApi';
 import { actions } from './store/contacts/slice';
-import Contacts from './components/Contacts/Contacts';
-import Form from './components/Form/Form';
 import Section from './components/Section/Section';
 import Filter from './components/Filter/Filter';
+import Contacts from './components/Contacts/Contacts';
+import Form from './components/Form/Form';
 
 export default function App() {
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.contacts.filter);
+  const { data: contacts } = useFetchContactsQuery();
+  const [addContact] = useAddContactMutation();
+  const [deleteContact] = useDeleteContactMutation();
+  const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
-
-  function getNewContact(newContact) {
-    if (contacts.find(contact => contact.name === newContact.name)) {
-      alert(`${newContact.name} is already in contacts.`);
-    } else {
-      dispatch(actions.addContact(newContact));
-    }
-  }
-
-  function handleFilter(e) {
-    dispatch(actions.setFilter(e.target.value));
-  }
-
   const normalizeFilter = filter.toLowerCase();
-  const filteredContacts = contacts.filter(contact =>
+  const filteredContacts = contacts?.filter(contact =>
     contact.name.toLowerCase().includes(normalizeFilter),
   );
+  const handleFilter = e => dispatch(actions.setFilter(e.target.value));
 
   return (
     <>
       <Section title="Phonebook">
-        <Form onSubmitContact={getNewContact} />
+        <Form onSubmitContact={addContact} />
       </Section>
       <Section title="Contacts">
-        {contacts.length > 0 ? (
-          <>
-            <Filter value={filter} onChange={handleFilter} />
-            <Contacts
-              contacts={filteredContacts}
-              onRemoveClick={id => dispatch(actions.deleteContact(id))}
-            />
-          </>
-        ) : (
-          <p>List is empty</p>
+        <Filter value={filter} onChange={handleFilter} />
+        {contacts && (
+          <Contacts contacts={filteredContacts} onDeleteClick={deleteContact} />
         )}
       </Section>
     </>
