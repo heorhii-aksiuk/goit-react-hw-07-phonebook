@@ -16,10 +16,12 @@ export default function App() {
   const [deleteContact] = useDeleteContactMutation();
   const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
+
   const normalizeFilter = filter.toLowerCase();
   const filteredContacts = contacts?.filter(contact =>
     contact.name.toLowerCase().includes(normalizeFilter),
   );
+
   const handleFilter = e => dispatch(actions.setFilter(e.target.value));
 
   return (
