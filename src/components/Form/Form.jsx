@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { nanoid } from 'nanoid';
 import s from './Form.module.css';
 
 export default function Form({ onSubmitContact }) {
@@ -15,8 +14,7 @@ export default function Form({ onSubmitContact }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const id = nanoid(10);
-    const newContact = { id, name, number };
+    const newContact = { name, number };
     onSubmitContact(newContact);
     reset();
   }
